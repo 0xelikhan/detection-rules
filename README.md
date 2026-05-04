@@ -1,7 +1,5 @@
 # Detection Rules
 
-![Validate Detection Rules](../../actions/workflows/validate-detections.yml/badge.svg)
-
 
 > Sigma and YARA detection rules. 
 

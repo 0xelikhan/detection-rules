@@ -1,0 +1,22 @@
+title: Pure Logs Stealer DLL Creation
+id: 7fa04d90-a159-4d01-a71f-5e92a102f0e8
+status: experimental
+description: Detects Pure Logs Stealer DLL Creation
+author: elikhan
+date: 2025/12/27
+tags:
+    - detection.DS0022
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection:
+        TargetFilename|endswith: '\64\sqlite.interop.dll'
+    filter: # Exclude ThreatLockerService and cleanmgr processes 
+        Image|endswith:
+            -  '\ThreatLockerService.exe'
+            -  '\cleanmgr.exe'
+    condition: selection and not filter
+falsepositives:
+    - Medium
+level: critical

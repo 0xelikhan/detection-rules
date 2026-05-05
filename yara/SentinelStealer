@@ -1,7 +1,6 @@
 rule sentinel_stealer {
     meta:
         description = "Detects Sentinel Stealer"
-        author = "RussianPanda"
         date = "2025-01-19"
         hash = "3a540a8a81c5a5b452f154d7875423a3"
     

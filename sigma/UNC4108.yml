@@ -5,7 +5,7 @@ description: Detects process injection into notification_helper.exe
 references:
     - https://trac-labs.com
 author: elikhan
-date: 2025-2-13
+date: 2025-02-13
 tags:
     - attack.t1055
 logsource:

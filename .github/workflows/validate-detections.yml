@@ -28,13 +28,13 @@ jobs:
       - name: Convert rules to Elastic format
         run: |
           mkdir -p converted
-          for rule in sigma/**/*.yml; do
+          find sigma -name '*.yml' -type f | while read -r rule; do
             echo "Converting: $rule"
             sigma convert -t lucene "$rule" >> converted/elastic_rules.txt 2>&1 || true
           done
       - name: Convert rules to Splunk format
         run: |
-          for rule in sigma/**/*.yml; do
+          find sigma -name '*.yml' -type f | while read -r rule; do
             sigma convert -t splunk "$rule" >> converted/splunk_rules.txt 2>&1 || true
           done
       - name: Show conversion summary

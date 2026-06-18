@@ -7,7 +7,7 @@ references:
 author: elikhan
 date: 2025-2-13
 tags:
-    - T1055
+    - attack.t1055
 logsource:
     category: process_creation
     product: windows

@@ -5,7 +5,7 @@ description: The command retrieves the model names of disk drives that are virtu
 author: elikhan
 date: 2025/7/22
 tags:
-    - T1083
+    - attack.t1083
 logsource:
   category: process_creation
   product: windows

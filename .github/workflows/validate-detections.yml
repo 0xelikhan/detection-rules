@@ -23,28 +23,36 @@ jobs:
           pip install pySigma-backend-elasticsearch
           pip install pySigma-backend-splunk
           pip install PyYAML
+      - name: Debug - show what is in sigma
+        run: |
+          echo "=== All files under sigma/ ==="
+          find sigma -type f
+          echo "=== .yml matches ==="
+          find sigma -name '*.yml' -type f
+          echo "=== .yaml matches ==="
+          find sigma -name '*.yaml' -type f
+          echo "=== sigma-cli version ==="
+          sigma version || true
+          echo "=== available backends ==="
+          sigma list targets || true
       - name: Validate Sigma rule syntax
         run: python3 scripts/validate_rules.py
-      - name: Convert rules to Elastic format
+      - name: Convert rules to Elastic and Splunk
         run: |
           mkdir -p converted
-          find sigma -name '*.yml' -type f | while read -r rule; do
+          find sigma \( -name '*.yml' -o -name '*.yaml' \) -type f | while read -r rule; do
             echo "Converting: $rule"
-            sigma convert -t lucene "$rule" >> converted/elastic_rules.txt 2>&1 || true
+            sigma convert -t lucene "$rule" >> converted/elastic_rules.txt 2>> converted/errors.txt || echo "FAILED: $rule" >> converted/errors.txt
+            sigma convert -t splunk "$rule" >> converted/splunk_rules.txt 2>> converted/errors.txt || echo "FAILED: $rule" >> converted/errors.txt
           done
-      - name: Convert rules to Splunk format
+      - name: Show results
         run: |
-          find sigma -name '*.yml' -type f | while read -r rule; do
-            sigma convert -t splunk "$rule" >> converted/splunk_rules.txt 2>&1 || true
-          done
-      - name: Show conversion summary
-        run: |
-          echo "=== Elastic rules ==="
-          wc -l converted/elastic_rules.txt || true
-          echo "=== Splunk rules ==="
-          wc -l converted/splunk_rules.txt || true
+          echo "=== Elastic ===" ; cat converted/elastic_rules.txt || echo "EMPTY"
+          echo "=== Splunk ===" ; cat converted/splunk_rules.txt || echo "EMPTY"
+          echo "=== Errors ===" ; cat converted/errors.txt || echo "NONE"
       - name: Upload converted rules
         uses: actions/upload-artifact@v4
         with:
           name: converted-rules
           path: converted/
+        if: always()
